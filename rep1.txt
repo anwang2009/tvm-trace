@@ -1,33 +1,33 @@
 def @main(%x: Tensor[(10, 20), float32]) {
-  %0 = add(%x, 1f)  /* curindex:0, parentindex:0 */;
-  %1 = exp(%0)  /* curindex:1, parentindex:0 */;
-  squeeze(%1)  /* curindex:2, parentindex:0 */
+  %0 = add(%x, 1f)  /* curindex:1 */;
+  %1 = exp(%0)  /* curindex:2 */;
+  squeeze(%1)  /* curindex:3 */
 }
 
 ran pass InferType
 def @main(%x: Tensor[(10, 20), float32] /* ty=Tensor[(10, 20), float32] */) -> Tensor[(10, 20), float32] {
-  %0 = add(%x, 1f /* ty=float32 */)  /* curindex:0, parentindex:0 */ /* ty=Tensor[(10, 20), float32] */;
-  %1 = exp(%0)  /* curindex:1, parentindex:1 */ /* ty=Tensor[(10, 20), float32] */;
-  squeeze(%1)  /* curindex:2, parentindex:2 */ /* ty=Tensor[(10, 20), float32] */
+  %0 = add(%x, 1f /* ty=float32 */)  /* curindex:1, parentindex:1 */ /* ty=Tensor[(10, 20), float32] */;
+  %1 = exp(%0)  /* curindex:2, parentindex:2 */ /* ty=Tensor[(10, 20), float32] */;
+  squeeze(%1)  /* curindex:3, parentindex:3 */ /* ty=Tensor[(10, 20), float32] */
 }
 
 ran pass FuseOps
 def @main(%x: Tensor[(10, 20), float32] /* ty=Tensor[(10, 20), float32] */) -> Tensor[(10, 20), float32] {
   %2 = fn (%p0: Tensor[(10, 20), float32], Primitive=1) -> Tensor[(10, 20), float32] {
-    %0 = add(%p0, 1f /* ty=float32 */)  /* curindex:0, parentindex:0 */;
-    %1 = exp(%0)  /* curindex:1, parentindex:1 */;
-    squeeze(%1)  /* curindex:2, parentindex:0 */
+    %0 = add(%p0, 1f /* ty=float32 */)  /* curindex:1, parentindex:1 */;
+    %1 = exp(%0)  /* curindex:2, parentindex:2 */;
+    squeeze(%1)  /* curindex:3 */
   };
-  %2(%x)  /* curindex:3, parentindex:2 */
+  %2(%x)  /* curindex:4, parentindex:3 */
 }
 
 ran pass LabelOps
 def @main(%x: Tensor[(10, 20), float32] /* ty=Tensor[(10, 20), float32] */, hash="1f658649b74fce71") -> Tensor[(10, 20), float32] {
   %2 = fn (%p0: Tensor[(10, 20), float32], Primitive=1, hash="da0fd731040af737") -> Tensor[(10, 20), float32] {
-    %0 = add(%p0, 1f /* ty=float32 */)  /* curindex:0, parentindex:0 */;
-    %1 = exp(%0)  /* curindex:1, parentindex:1 */;
-    squeeze(%1)  /* curindex:2, parentindex:2 */
+    %0 = add(%p0, 1f /* ty=float32 */)  /* curindex:1, parentindex:1 */;
+    %1 = exp(%0)  /* curindex:2, parentindex:2 */;
+    squeeze(%1)  /* curindex:3, parentindex:3 */
   };
-  %2(%x)  /* curindex:3, parentindex:3 */
+  %2(%x)  /* curindex:4, parentindex:4 */
 }
 
