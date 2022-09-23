@@ -1,34 +1,34 @@
 def @main(%x: Tensor[(10, 20), float32]) {
-  %0 = add(%x, 1f)  /* curindex:0*/;
-  %1 = exp(%0)  /* curindex:0*/;
-  squeeze(%1)  /* curindex:0*/
+  %0 = add(%x, 1f)  /* curindex:0 */;
+  %1 = exp(%0)  /* curindex:0 */;
+  squeeze(%1)  /* curindex:0 */
 }
 
 ran pass GetTopologicalOrdering
 def @main(%x: Tensor[(10, 20), float32]) {
-  %0 = add(%x, 1f)  /* curindex:0, parentindex:0*/;
-  %1 = exp(%0)  /* curindex:1, parentindex:0*/;
-  squeeze(%1)  /* curindex:2, parentindex:0*/
+  %0 = add(%x, 1f)  /* curindex:0, parentindex:0 */;
+  %1 = exp(%0)  /* curindex:1, parentindex:0 */;
+  squeeze(%1)  /* curindex:2, parentindex:0 */
 }
 
 ran pass InferType
 def @main(%x: Tensor[(10, 20), float32] /* ty=Tensor[(10, 20), float32] */) -> Tensor[(10, 20), float32] {
-  %0 = add(%x, 1f /* ty=float32 */)  /* curindex:0, parentindex:0*/ /* ty=Tensor[(10, 20), float32] */;
-  %1 = exp(%0)  /* curindex:1, parentindex:1*/ /* ty=Tensor[(10, 20), float32] */;
-  squeeze(%1)  /* curindex:2, parentindex:2*/ /* ty=Tensor[(10, 20), float32] */
+  %0 = add(%x, 1f /* ty=float32 */)  /* curindex:0, parentindex:0 */ /* ty=Tensor[(10, 20), float32] */;
+  %1 = exp(%0)  /* curindex:1, parentindex:1 */ /* ty=Tensor[(10, 20), float32] */;
+  squeeze(%1)  /* curindex:2, parentindex:2 */ /* ty=Tensor[(10, 20), float32] */
 }
 
 ran pass GetTopologicalOrdering
 def @main(%x: Tensor[(10, 20), float32] /* ty=Tensor[(10, 20), float32] */) -> Tensor[(10, 20), float32] {
-  %0 = add(%x, 1f /* ty=float32 */)  /* curindex:0, parentindex:0*/ /* ty=Tensor[(10, 20), float32] */;
-  %1 = exp(%0)  /* curindex:1, parentindex:1*/ /* ty=Tensor[(10, 20), float32] */;
-  squeeze(%1)  /* curindex:2, parentindex:2*/ /* ty=Tensor[(10, 20), float32] */
+  %0 = add(%x, 1f /* ty=float32 */)  /* curindex:0, parentindex:0 */ /* ty=Tensor[(10, 20), float32] */;
+  %1 = exp(%0)  /* curindex:1, parentindex:1 */ /* ty=Tensor[(10, 20), float32] */;
+  squeeze(%1)  /* curindex:2, parentindex:2 */ /* ty=Tensor[(10, 20), float32] */
 }
 
 ran pass LabelOps
 def @main(%x: Tensor[(10, 20), float32] /* ty=Tensor[(10, 20), float32] */, hash="58382f978cd9cdca") -> Tensor[(10, 20), float32] {
-  %0 = add(%x, 1f /* ty=float32 */)  /* curindex:0, parentindex:0*/ /* ty=Tensor[(10, 20), float32] */;
-  %1 = exp(%0)  /* curindex:1, parentindex:1*/ /* ty=Tensor[(10, 20), float32] */;
-  squeeze(%1)  /* curindex:2, parentindex:2*/ /* ty=Tensor[(10, 20), float32] */
+  %0 = add(%x, 1f /* ty=float32 */)  /* curindex:0, parentindex:0 */ /* ty=Tensor[(10, 20), float32] */;
+  %1 = exp(%0)  /* curindex:1, parentindex:1 */ /* ty=Tensor[(10, 20), float32] */;
+  squeeze(%1)  /* curindex:2, parentindex:2 */ /* ty=Tensor[(10, 20), float32] */
 }
 
