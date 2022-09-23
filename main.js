@@ -21,11 +21,13 @@ function divMouseClick(class_name) {
             item.classList.add("selected");
         }
         let parent_ref = [].slice.call(item.classList).filter(ref => ref.startsWith("parent-"))[0];
-        let search_ref = "current-" + parent_ref.split("-")[1];
-        console.log("looking for", search_ref);
-        console.log(document.getElementsByClassName(search_ref));
-        items = [].slice.call(document.getElementsByClassName(search_ref));
-        console.log(items);
+        if (typeof parent_ref !== 'undefined') {
+            let search_ref = "current-" + parent_ref.split("-")[1];
+            console.log("looking for", search_ref);
+            console.log(document.getElementsByClassName(search_ref));
+            items = [].slice.call(document.getElementsByClassName(search_ref));
+            console.log(items);
+        }
     }
     // Go down
     if (selected) {
@@ -65,6 +67,10 @@ document.getElementById('import').onclick = function() {
     var lines = formatted.split(/\r?\n/);
     console.log("lines", lines);
 
+    var rx = /\/\* curindex:([0-9]*), parentindex:([0-9]*) \*\//;
+    var rx2 = /\/\* curindex:([0-9]*) \*\//;
+
+    let pass_level = 0;
     for (let i = 0; i < lines.length; i++) {
         // Parse comments for parent class name and current class name
         var line = lines[i];
@@ -74,24 +80,42 @@ document.getElementById('import').onclick = function() {
         temp.value = lines[i];
         temp.innerHTML = lines[i];
         temp.id = "div" + i;
+        console.log(line)
         var has_comment = line.includes("/*");
-
         if (has_comment) {
+            console.log(line);
+            let lineage_comments = rx.exec(line) || rx2.exec(line);
+            let current = null;
+            let parent = null;
+            if (lineage_comments !== null) {
+                let lineage = lineage_comments[0].split(",");
+                let current_comment = lineage[0].split(":")[1].split("*/")[0].trim();
+                current = pass_level + "_" + current_comment;
+                if (lineage.length > 1) {
+                    let parent_comment = lineage[1].split(":")[1].split("*/")[0].trim();
+                    parent = (pass_level - 1) + "_" + parent_comment;
+                }
+                console.log(current, parent);
+            }
             // split by comments
             console.log(line.split("/*")[1]);
-            var comments = line.split("/*")[1].split("*/")[0].split(",");
-            if (comments.length > 1) {
-                console.log(comments[2].trim());
-                let current_ref = ("current-" + comments[2].trim());
-                console.log(current_ref);
-                temp.classList.add(current_ref);
-                if (comments.length > 2) {
-                    let parent_ref = ("parent-" + comments[1].trim());
-                    temp.classList.add(parent_ref);
-                    console.log("parent_ref", parent_ref);
-                }
+            
+            let current_ref = ("current-" + current);
+            console.log(current_ref);
+            temp.classList.add(current_ref);
+            if (parent !== null) {
+                let parent_ref = ("parent-" + parent);
+                temp.classList.add(parent_ref);
+                console.log("parent_ref", parent_ref);
+            }
+            if (parent !== null || current !== null) {
                 temp.onclick = () => divMouseClick(current_ref);
             }
+        } 
+        if (line.trim().length == 0) {
+            pass_level = pass_level + 1;
+            console.log("yo", pass_level);
+            temp.innerHTML = "&nbsp";
         }
  
 
